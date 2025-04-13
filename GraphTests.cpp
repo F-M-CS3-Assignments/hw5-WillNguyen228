@@ -178,6 +178,27 @@ void TestDestructor(){
 	cout << "NO ERRORS.  Use valgrind to check!" << endl << endl;
 }
 
+void TestGraphWithCycles() {
+    cout << "Testing Graph with Cycles..." << endl;
+    Graph g = Graph();
+    g.AddNode(1);
+    g.AddNode(2);
+    g.AddEdge(1, 2);
+    g.AddEdge(2, 1); // back edge
+
+    assert(g.EdgesToString() == "[((1)->(2) w:0), ((2)->(1) w:0)]");
+    cout << "PASSED!" << endl << endl;
+}
+
+void TestSelfLoop() {
+    cout << "Testing Self-loop..." << endl;
+    Graph g = Graph();
+    g.AddNode(10);
+    const GraphEdge* selfEdge = g.AddEdge(10, 10, 7);
+    assert(selfEdge->from == 10 && selfEdge->to == 10 && selfEdge->weight == 7);
+    cout << "PASSED!" << endl << endl;
+}
+
 int main(){
 	
 	TestAddNode();
@@ -186,7 +207,10 @@ int main(){
 	TestGetOutwardEdgesFrom();
 	TestGetNodes();
 	TestDestructor();
+	TestGraphWithCycles();
+	TestSelfLoop();
 
+	//type this in the terminal to use valgrind "valgrind --leak-check=full ./graph-tests"
 	
 	cout << "ALL TESTS PASSED!" << endl;
 	return 0;

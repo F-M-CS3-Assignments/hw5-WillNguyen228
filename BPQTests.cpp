@@ -1,5 +1,3 @@
-
-
 #include "Graph.h"
 #include "BetterPriorityQueue.h"
 #include <cassert>
@@ -82,8 +80,6 @@ void UpdateTest() {
 	assert(q.Update(positive) == true);
 	cout << "q after: " << q.ToString() << endl;
 
-
-
 	// some students might have a slightly different order
 	// please ensure the output is a valid priorityqueue as 
 	// implemented by a binary heap.  Any valid order is fine!
@@ -91,7 +87,6 @@ void UpdateTest() {
 	string soln2 = "[(1, pri: 0), (2, pri: 1), (6, pri: 0), (4, pri: 3), (5, pri: 4), (3, pri: 2)]";
 	string soln3 = "[(1, pri: 0), (6, pri: 0), (2, pri: 1), (3, pri: 2), (4, pri: 3), (5, pri: 4)]";
 
-	
 	// Test 2: attempt to update with an empty / undefined input
 	BPQNode negative;
 	assert(q.Update(negative) == false);
