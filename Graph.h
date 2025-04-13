@@ -4,10 +4,10 @@
 #include <iostream>
 #include <set>
 #include <climits>
-
+#include <map>  
+#include <vector>
 
 using namespace std;
-
 
 // nodes are essentially just their key value
 // These are special commands which define
@@ -19,6 +19,7 @@ using namespace std;
 
 // when coding, be careful to ensure that every instance of
 // a GraphEdge is created on the heap
+//This is a struct which is just a class with default public access
 struct GraphEdge {
 	nodekey_t from;
 	nodekey_t to;
@@ -46,7 +47,6 @@ class Graph{
 		string NodesToString() const; // all nodes
 		string EdgesToString() const; // all edges
 		
-		
 		// These are sets since the order shouldn't matter (theoretically, a graph has no order)
 		set<const GraphEdge*> GetOutwardEdgesFrom(nodekey_t nodeKey) const; // get pointers to the edges that go out from the given node
 		set<nodekey_t> GetNodes() const; // gets all the nodes in the graph
@@ -59,6 +59,11 @@ class Graph{
 	private:
 		// TODO:
 		// put your code here!
+		vector<nodekey_t> nodes;  // store node keys
+		
+		// Since our node keys are continuous integers
+		// Using vector will help us access the adjacency list using the key as the index
+		vector<vector<GraphEdge*>> adjList;  
 	
 };
 

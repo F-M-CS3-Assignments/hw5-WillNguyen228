@@ -1,3 +1,5 @@
+//Author: Will Nguyen
+//Date: 13/04
 
 #include "Graph.h"
 #include <iostream>
@@ -5,11 +7,6 @@
 
 
 using namespace std;
-
-
-
-
-
 
 // This method is not part of the Graph class / header on purpose
 const GraphEdge* findExistingEdge(nodekey_t gnFrom, nodekey_t gnTo, vector<vector<GraphEdge *>> adjList)
@@ -47,10 +44,6 @@ string GraphEdgeToString(const GraphEdge* e)
 	return "((" + to_string(e->from) + ")->(" + to_string(e->to) + ") w:" + to_string(e->weight) + ")";
 }
 
-
-
-
-
 void Graph::AddNode(nodekey_t key)
 {
 
@@ -59,19 +52,15 @@ void Graph::AddNode(nodekey_t key)
 		throw invalid_argument("Duplicate node cannot be added: " + to_string(key));
 	}
 
-
 	nodes.push_back(key);
-	vector <GraphEdge*> *newRow = new vector<GraphEdge*>;
-	adjList.push_back(*newRow);
-	delete newRow; // ?
+	// vector <GraphEdge*> *newRow = new vector<GraphEdge*>; //Not necessary
+	adjList.push_back(vector<GraphEdge*>());
+	// delete newRow; // You do not need to new a vew vector then delete. You don’t need dynamic allocation there
 }
-
-
 
 
 const GraphEdge *Graph::AddEdge(nodekey_t gnFrom, nodekey_t gnTo, unsigned int w)
 {
-
 	// The AddEdge method creates new edges.  It does not and should not update / change
 	// the weights of existing edges.  findExistingEdge does not check the weight for this reason
 	const GraphEdge* dup = findExistingEdge(gnFrom, gnTo, this->adjList);
@@ -94,6 +83,18 @@ const GraphEdge *Graph::AddEdge(nodekey_t gnFrom, nodekey_t gnTo, unsigned int w
 
 	// TODO:
 	// Do stuff here?  IDK what though
+	// You created the graph edge with GraphEdge *ge but never assigned values or push it into adjList
+	ge->from = gnFrom;
+	ge->to = gnTo;
+	ge->weight = w;
+
+	// Find index of gnFrom
+	size_t fromIdx = 0;
+	while (fromIdx < nodes.size() && nodes[fromIdx] != gnFrom) {
+		fromIdx++;
+	}
+
+	adjList[fromIdx].push_back(ge);
 
 	const GraphEdge *response = ge; // this helps the compiler go
 	return response;
@@ -104,10 +105,11 @@ bool Graph::IsPresent(nodekey_t key) const
 {
 	// TODO:
 	// iterate through this->nodes and look for one that matches key
+	for (auto k : this->nodes) {
+		if (k == key) return true;
+	}
+	return false;
 }
-
-
-
 
 set<const GraphEdge*> Graph::GetOutwardEdgesFrom(nodekey_t node) const 
 {
@@ -126,8 +128,11 @@ set<const GraphEdge*> Graph::GetOutwardEdgesFrom(nodekey_t node) const
 	// TODO:
 	// iterate over this->adjList.at(idx); and find nodes that match the given node
 	// in their "from" field, put those nodes in result
-
-
+	for (auto edge : adjList[idx]) {
+		if (edge->from == node) {
+			result.insert(edge);
+		}
+	}
 	return result;
 }
 
@@ -135,6 +140,11 @@ set<const GraphEdge*> Graph::GetOutwardEdgesFrom(nodekey_t node) const
 {
 	// TODOL
 	// iterate of this->nodes, accumulate into a set<nodekey_t> and return it
+	set<nodekey_t> result;
+	for (auto k : nodes) {
+		result.insert(k); //Wrap all the nodes into a set 
+	}
+	return result;
 }
 
 
@@ -205,10 +215,20 @@ string Graph::EdgesToString() const
 }
 
 
-
-Graph::~Graph() {
+Graph::~Graph() { //~ means that this is the destructor
 	// TODO:
 	// Right now the memory leaks are bad, I need to
 	// implement something here to fix it
+
+	//Need to delete the GraphEdge and vector<GraphEdge*>*
+	//In Addnode, have to delete after pushing a copy (not pointer)
+	for (auto& row : adjList) {
+		for (auto edge : row) {
+			delete edge;
+		}
+		row.clear();
+	}
+	adjList.clear();
+	nodes.clear();
 }
 

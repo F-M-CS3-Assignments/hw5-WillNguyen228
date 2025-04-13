@@ -1,12 +1,8 @@
-
-
 #include "Graph.h"
 #include <iostream>
 #include <cassert>
 
 using namespace std;
-
-
 
 void TestAddNode(){
 	cout << "Testing AddNode..." << endl;
@@ -181,8 +177,6 @@ void TestDestructor(){
 	
 	cout << "NO ERRORS.  Use valgrind to check!" << endl << endl;
 }
-
-
 
 int main(){
 	
