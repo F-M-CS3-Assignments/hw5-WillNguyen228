@@ -69,6 +69,69 @@ void MoreDijkstraTests(){
 	cout << "Deep Testing Dijkstra Algorithm..." << endl;
 
 	// Your code goes here!
+	// Test 1: One node, start == end
+	{
+		Graph *g = new Graph();
+		g->AddNode(1);
+		assert(dijkstra(1, 1, g) == 0);
+		delete g;
+	}
+
+	// Test 2: Two disconnected nodes
+	{
+		Graph *g = new Graph();
+		g->AddNode(1);
+		g->AddNode(2);
+		assert(dijkstra(1, 2, g) == -1);  // no path
+		delete g;
+	}
+
+	// Test 3: Two connected nodes
+	{
+		Graph *g = new Graph();
+		g->AddNode(1);
+		g->AddNode(2);
+		g->AddEdge(1, 2, 5);
+		assert(dijkstra(1, 2, g) == 5);
+		delete g;
+	}
+
+	// Test 4: Multiple paths, Dijkstra should pick the shortest
+	{
+		Graph *g = new Graph();
+		for (int i = 1; i <= 4; i++) g->AddNode(i);
+		g->AddEdge(1, 2, 1);
+		g->AddEdge(2, 4, 10);
+		g->AddEdge(1, 3, 2);
+		g->AddEdge(3, 4, 3);
+		assert(dijkstra(1, 4, g) == 5);  // 1->3->4 is shorter than 1->2->4
+		delete g;
+	}
+
+	// Test 5: Cycle in the graph
+	{
+		Graph *g = new Graph();
+		for (int i = 1; i <= 3; i++) g->AddNode(i);
+		g->AddEdge(1, 2, 4);
+		g->AddEdge(2, 3, 6);
+		g->AddEdge(3, 1, 2);  // Cycle
+		assert(dijkstra(1, 3, g) == 10);  // 1->2->3
+		delete g;
+	}
+
+	// Test 6: Slightly larger graph (6 nodes, like a ring)
+	{
+		Graph *g = new Graph();
+		for (int i = 1; i <= 6; i++) g->AddNode(i);
+		g->AddEdge(1, 2, 1);
+		g->AddEdge(2, 3, 1);
+		g->AddEdge(3, 4, 1);
+		g->AddEdge(4, 5, 1);
+		g->AddEdge(5, 6, 1);
+		g->AddEdge(6, 1, 1);  // closing the ring
+		assert(dijkstra(1, 4, g) == 3);  // shortest path: 1->2->3->4
+		delete g;
+	}
 
 	cout << "DONE Deep Testing Dijkstra Algorithm" << endl;
 }
