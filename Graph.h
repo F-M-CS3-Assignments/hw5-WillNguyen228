@@ -34,7 +34,6 @@ class Graph{
 		//Graph(const Graph&); // you may add this, it is ungraded
 		~Graph();
 
-
 		// both of these should throw an invalid_argument exception if invalid inputs are given
 		// such as a duplicate node key or a node key that doesn't exist in the graph
 		void AddNode(nodekey_t key = 0);
@@ -54,7 +53,8 @@ class Graph{
 
 		size_t Size() const; // num edges
 		size_t Order() const; // num nodes
-	
+
+		GraphEdge* findExistingEdge(nodekey_t from, nodekey_t to)  const;
 	
 	private:
 		// TODO:
@@ -64,7 +64,6 @@ class Graph{
 		// Since our node keys are continuous integers
 		// Using vector will help us access the adjacency list using the key as the index
 		vector<vector<GraphEdge*>> adjList;  
-	
 };
 
 #endif

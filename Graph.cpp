@@ -9,13 +9,13 @@
 using namespace std;
 
 // This method is not part of the Graph class / header on purpose
-const GraphEdge* findExistingEdge(nodekey_t gnFrom, nodekey_t gnTo, vector<vector<GraphEdge *>> adjList)
+// I added it to the graph class anyways so that it can be used elsewhere
+GraphEdge* Graph::findExistingEdge(nodekey_t gnFrom, nodekey_t gnTo) const
 {
 	if(adjList.size() == 0)
 	{
 		return nullptr;
 	}
-
 
 	for(size_t rowIDX = 0; rowIDX < adjList.size(); rowIDX++)
 	{
@@ -63,7 +63,7 @@ const GraphEdge *Graph::AddEdge(nodekey_t gnFrom, nodekey_t gnTo, unsigned int w
 {
 	// The AddEdge method creates new edges.  It does not and should not update / change
 	// the weights of existing edges.  findExistingEdge does not check the weight for this reason
-	const GraphEdge* dup = findExistingEdge(gnFrom, gnTo, this->adjList);
+	GraphEdge* dup = findExistingEdge(gnFrom, gnTo);
 	if(dup != nullptr)
 	{
 		throw invalid_argument("Duplicate edge cannot be added: " + GraphEdgeToString(dup));
@@ -122,8 +122,6 @@ set<const GraphEdge*> Graph::GetOutwardEdgesFrom(nodekey_t node) const
 		throw invalid_argument("No such node: " + to_string(node));
 	}
 
-
-
 	set<const GraphEdge*> result = set<const GraphEdge*>();
 	// TODO:
 	// iterate over this->adjList.at(idx); and find nodes that match the given node
@@ -165,8 +163,6 @@ size_t Graph::Size() const
 
 	return total;
 }
-
-
 
 string Graph::NodesToString() const 
 {

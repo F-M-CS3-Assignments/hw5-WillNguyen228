@@ -35,6 +35,9 @@ public:
     bool Update(const BPQNode& n);
     string ToString() const;
     static string BPQNodeToString(const BPQNode& n);
+    //Added these functions to make it easy to implement Dijkstra's algorithm
+    BPQNode Top() const; 
+    void Pop();
 };
 
 #endif 

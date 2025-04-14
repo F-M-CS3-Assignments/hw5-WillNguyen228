@@ -1,4 +1,3 @@
-
 #include "Graph.h"
 #include "BetterPriorityQueue.h"
 #include "Dijkstra.h"
@@ -7,7 +6,6 @@
 #include <cassert>
 
 using namespace std;
-
 
 int DijkstraTest(){
 	cout << "Testing Dijkstra Algorithm..." << endl;

@@ -27,7 +27,7 @@ bool BetterPriorityQueue::Update(const BPQNode& n) {
         if (c[i].gnode == n.gnode) { // if we find a node in the queue that has the same gnode then we check if its priority should be updated
             if (n.pri < c[i].pri) { // update the priority only if the new one is smaller
                 c[i].pri = n.pri; // this actually updates the priority of the node in the queue
-                make_heap(c.begin(), c.end(), comp); //rebuild the heap so the priority queue stays valid
+                push_heap(c.begin(), c.end(), comp); //rebuild the heap so the priority queue stays valid
                 return true;
             } else {
                 return false; // same node found, but no need to update
@@ -51,4 +51,20 @@ string BetterPriorityQueue::ToString() const {
 // Converts a BPQNode to string like "(id, pri: value)"
 string BetterPriorityQueue::BPQNodeToString(const BPQNode& n) {
     return "(" + to_string(n.gnode) + ", pri: " + to_string(n.pri) + ")";
+}
+
+// Access the top node with the smallest priority element without removing it
+BPQNode BetterPriorityQueue::Top() const {
+    if (!c.empty()) {
+        return c.front(); // In a min-heap, the smallest element is at the front
+    }
+    return BPQNode(); // Return default node if empty
+}
+
+// Remove the top node with the smallest priority
+void BetterPriorityQueue::Pop() {
+    if (!c.empty()) {
+        pop_heap(c.begin(), c.end(), comp); // Move smallest to the end
+        c.pop_back(); // Remove it
+    }
 }

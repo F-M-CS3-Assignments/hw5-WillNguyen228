@@ -26,7 +26,6 @@ void ContainsTest() {
 		//cout << "size: " << q.size() << endl;
 	}
 	
-	
 	// 1st test
 	BPQNode positive;
 	positive.gnode = 2;
@@ -144,10 +143,23 @@ void DuplicateUpdateTest() {
 	cout << "PASSED!" << endl;
 }
 
+void EmptyQueueUpdateTest() {
+	cout << "Testing Update on Empty Queue..." << endl;
+
+	BetterPriorityQueue q;
+	BPQNode n;
+	n.gnode = 1;
+	n.pri = 1;
+	assert(q.Update(n) == false);
+	cout << "PASSED!" << endl;
+}
+
 int main(){
 	
 	ContainsTest();
 	UpdateTest();
+	DuplicateUpdateTest();
+	EmptyQueueUpdateTest();
 	
 	cout << "ALL TESTS PASSED!!" << endl;
 	
