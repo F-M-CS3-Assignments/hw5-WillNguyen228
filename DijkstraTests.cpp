@@ -119,6 +119,8 @@ void MoreDijkstraTests(){
 		delete g;
 	}
 
+	// Assume no negative values 
+
 	// Test 6: Slightly larger graph (6 nodes, like a ring)
 	{
 		Graph *g = new Graph();
@@ -132,6 +134,34 @@ void MoreDijkstraTests(){
 		assert(dijkstra(1, 4, g) == 3);  // shortest path: 1->2->3->4
 		delete g;
 	}
+
+	// Test 7: Fully connected graph (all nodes connected)
+    {
+        Graph *g = new Graph();
+        for (int i = 1; i <= 5; i++) g->AddNode(i);
+        g->AddEdge(1, 2, 5);
+        g->AddEdge(1, 3, 1);
+        g->AddEdge(2, 4, 2);
+        g->AddEdge(3, 4, 6);
+        g->AddEdge(4, 5, 3);
+        g->AddEdge(1, 5, 8);
+        assert(dijkstra(1, 5, g) == 8);  // 1->3->4->5
+        delete g;
+    }
+
+    // Test 8: Disconnected graph with multiple components
+    {
+        Graph *g = new Graph();
+        g->AddNode(1);
+        g->AddNode(2);
+        g->AddNode(3);
+        g->AddNode(4);
+        g->AddNode(5);
+        g->AddEdge(1, 2, 5);
+        g->AddEdge(2, 3, 3);
+        assert(dijkstra(1, 5, g) == -1);  // no path between 1 and 5
+        delete g;
+    }
 
 	cout << "DONE Deep Testing Dijkstra Algorithm" << endl;
 }

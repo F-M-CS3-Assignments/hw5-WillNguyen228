@@ -42,8 +42,6 @@ void ContainsTest() {
 	cout << "PASSED!" << endl;
 }
 
-
-
 void UpdateTest() {
 	cout << "Testing Update Helper Method..." << endl;
 	
@@ -67,7 +65,6 @@ void UpdateTest() {
 		//cout << "size: " << q.size() << endl;
 		i++;
 	}
-	
 
 	//cout << "q before: " << queue_to_string(q) << endl;
 
@@ -154,12 +151,103 @@ void EmptyQueueUpdateTest() {
 	cout << "PASSED!" << endl;
 }
 
+void DuplicateInsertionTest() {
+	cout << "Testing Duplicate Insertions..." << endl;
+
+	Graph g;
+	BetterPriorityQueue q;
+
+	g.AddNode(1);
+
+	BPQNode n1;
+	n1.gnode = 1;
+	n1.pri = 5;
+
+	q.push(n1);
+	q.push(n1); // Duplicate insertion, should still only keep one with min priority in practice
+
+	assert(q.Contains(n1));
+	cout << "Queue after duplicates: " << q.ToString() << endl;
+
+	cout << "PASSED!" << endl;
+}
+
+void StressTest() {
+	cout << "Stress Testing Priority Queue with Many Elements..." << endl;
+
+	BetterPriorityQueue q;
+	const int SIZE = 1000;
+
+	for (int i = SIZE; i >= 1; --i) {
+		BPQNode node;
+		node.gnode = i;
+		node.pri = i;
+		q.push(node);
+	}
+
+	// Check if the top is the smallest
+	BPQNode top = q.Top();
+	q.Pop();
+	assert(top.pri == 1);
+	cout << "Top after stress push: " << top.gnode << ", pri: " << top.pri << endl;
+
+	cout << "PASSED!" << endl;
+}
+
+void PopOrderTest() {
+	cout << "Testing Pop Order..." << endl;
+
+	BetterPriorityQueue q;
+	for (int i = 10; i >= 1; --i) {
+		BPQNode node;
+		node.gnode = i;
+		node.pri = i;
+		q.push(node);
+	}
+
+	int expected = 1;
+	while (!q.empty()) {
+		BPQNode n = q.Top();
+		q.Pop();
+		assert(n.pri == expected);
+		expected++;
+	}
+	cout << "PASSED!" << endl;
+}
+
+void ContainsAfterPopTest() {
+	cout << "Testing Contains and Update after popping nodes..." << endl;
+
+	BetterPriorityQueue q;
+	for (int i = 1; i <= 5; ++i) {
+		BPQNode node;
+		node.gnode = i;
+		node.pri = i;
+		q.push(node);
+	}
+
+	// pop a node
+	BPQNode popped = q.Top();
+	q.Pop();
+	assert(!q.Contains(popped));
+
+	// try to update a popped node
+	popped.pri = 0;
+	assert(q.Update(popped) == false);
+
+	cout << "PASSED!" << endl;
+}
+
 int main(){
 	
 	ContainsTest();
 	UpdateTest();
 	DuplicateUpdateTest();
 	EmptyQueueUpdateTest();
+	DuplicateInsertionTest();
+	StressTest();
+	PopOrderTest();
+	ContainsAfterPopTest();
 	
 	cout << "ALL TESTS PASSED!!" << endl;
 	

@@ -8,24 +8,28 @@
 
 using namespace std;
 
-int dijkstra(nodekey_t start, nodekey_t end, const Graph *g) {
-    // Big-O Time Complexity:
-    // The time complexity of Dijkstra's algorithm depends on the number of nodes and edges in the graph.
-    // For this implementation, we use a priority queue (BetterPriorityQueue) which allows us to efficiently
-    // extract the node with the smallest distance. The time complexity is as follows:
-    // - Extracting a node from the priority queue: O(log N) where N is the number of nodes in the queue.
-    // - For each edge, we perform a decrease-key operation, which takes O(log N) time.
-    // Thus, the overall time complexity is O((V + E) * log V), where V is the number of vertices and E is the number of edges.
+// Big-O Time Complexity:
+// The time complexity of Dijkstra's algorithm depends on the number of nodes and edges in the graph.
+// We are using a priority queue which allows us to get the node with the smallest distance. 
+// The time complexities are:
+// The cost for each dequeue and enqueue operation is O(log V) 
+// For each neighbor, we are checking if the path is shorter and update it if it is. 
+// So in the worst case we check every edge. -> O(E * logV)
+// In the worst case, we would have to insert and pop each node in the priority queue too 
+// -> O (V * log V)
+// In total, our time complexity is O(E * logV) + O(V * log V) = O((V+E) * log V)
 
+int dijkstra(nodekey_t start, nodekey_t end, const Graph *g) {
     // Initializing all distances to infinity and the starting node's distance to 0
     // int numNodes = g->GetNodes().size();  // get the total number of nodes in the graph
-    unordered_map<nodekey_t, int> distances;
-    unordered_map<nodekey_t, nodekey_t> previousNodes;
+    unordered_map<nodekey_t, int> distances; // store  distance from start to each node
+    unordered_map<nodekey_t, nodekey_t> previousNodes; // to be able to backtrack
 
+    //Set all nodes with infinite distance except the start node
     for (auto node : g->GetNodes()) {
         distances[node] = numeric_limits<int>::max();
-        previousNodes[node] = -1;
-    }  // store the previous node in the shortest path for each node
+        previousNodes[node] = -1; // no predecessor yet
+    }  
 
     distances[start] = 0;  // since the istance from the start node to itself is 0
 
@@ -34,9 +38,9 @@ int dijkstra(nodekey_t start, nodekey_t end, const Graph *g) {
     BPQNode startNode;
     startNode.gnode = start;
     startNode.pri = 0;
-    pQueue.push(startNode);
+    pQueue.push(startNode); 
 
-    // Running the dijkstra algorithm
+    // Running the main loop
     while (!pQueue.empty()) {
         BPQNode currentNode = pQueue.Top();  // get the node with the smallest distance
         pQueue.Pop(); //removing that node
@@ -46,6 +50,7 @@ int dijkstra(nodekey_t start, nodekey_t end, const Graph *g) {
             break;
         }
 
+        // Get all neighboring nodes
         set<nodekey_t> neighbors;
         for (auto edge : g->GetOutwardEdgesFrom(currentNode.gnode)) {
             neighbors.insert(edge->to);
@@ -62,17 +67,21 @@ int dijkstra(nodekey_t start, nodekey_t end, const Graph *g) {
             // cout << distances[end] << endl;
             // If the new distance is shorter, update the distance and previous node
             if (newDistance < distances[neighbor]) {
+                // Update the shortest known distance to this neighbor
                 distances[neighbor] = newDistance;
+                // Record the current node as the previous node in the shortest path to this neighbor
                 previousNodes[neighbor] = currentNode.gnode;
 
-                // Add the neighbor to the priority queue
+                // Adding the neighbor to the priority queue
                 BPQNode neighborNode;
                 neighborNode.gnode = neighbor;
                 neighborNode.pri = newDistance;
                 
+                // If the neighbor is already in the priority queue, update its priority
                 if (pQueue.Contains(neighborNode)) {
                     pQueue.Update(neighborNode);
                 } else {
+                    // If not, just insert the neighbor into the priority queue
                     pQueue.push(neighborNode);
                 }
             }

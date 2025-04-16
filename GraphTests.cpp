@@ -199,6 +199,95 @@ void TestSelfLoop() {
     cout << "PASSED!" << endl << endl;
 }
 
+void TestEmptyGraph() {
+    cout << "Testing Empty Graph..." << endl;
+    Graph g = Graph();
+    
+    // Check that graph has no nodes or edges
+    assert(g.NodesToString() == "[]");
+    assert(g.EdgesToString() == "[]");
+    
+    cout << "PASSED!" << endl << endl;
+}
+
+void TestOneNodeGraph() {
+    cout << "Testing One Node Graph..." << endl;
+    Graph g = Graph();
+    
+    g.AddNode(1);
+    
+    // Check that there is one node and no edges
+    assert(g.NodesToString() == "[(1)]");
+    assert(g.EdgesToString() == "[]");
+    
+    cout << "PASSED!" << endl << endl;
+}
+
+void TestNoOutgoingEdges() {
+    cout << "Testing No Outgoing Edges..." << endl;
+    Graph g = Graph();
+    
+    g.AddNode(1);
+    g.AddNode(2);
+    
+    // Node 1 has no outgoing edges, so the result should be an empty set
+    set<const GraphEdge*> result = g.GetOutwardEdgesFrom(1);
+    set<const GraphEdge*> soln;  // empty set
+    
+    assert(result.size() == soln.size());
+    assert(result == soln);
+    
+    cout << "PASSED!" << endl << endl;
+}
+
+void TestFullyConnectedGraph() {
+    cout << "Testing Fully Connected Graph..." << endl;
+    Graph g = Graph();
+    
+    // Add nodes
+    for (int i = 1; i <= 4; i++) {
+        g.AddNode(i);
+    }
+    
+    // Add edges between every pair of nodes
+    g.AddEdge(1, 2, 1);
+    g.AddEdge(1, 3, 2);
+    g.AddEdge(1, 4, 3);
+    g.AddEdge(2, 3, 4);
+    g.AddEdge(2, 4, 5);
+    g.AddEdge(3, 4, 6);
+    
+    // Check the edges
+    assert(g.EdgesToString() == "[((1)->(2) w:1), ((1)->(3) w:2), ((1)->(4) w:3), ((2)->(3) w:4), ((2)->(4) w:5), ((3)->(4) w:6)]");
+    
+    cout << "PASSED!" << endl << endl;
+}
+
+void TestDisconnectedGraph() {
+    cout << "Testing Disconnected Graph..." << endl;
+    Graph g = Graph();
+    
+    // Add nodes for two disconnected components
+    g.AddNode(1);
+    g.AddNode(2);
+    g.AddNode(3);
+    g.AddNode(4);
+    
+    // Add edges only for the first component
+    g.AddEdge(1, 2, 2);
+    g.AddEdge(2, 3, 3);
+    
+    // Check the edges for the first component
+    assert(g.EdgesToString() == "[((1)->(2) w:2), ((2)->(3) w:3)]");
+    
+    // Ensure that the second component (nodes 3 and 4) is disconnected
+    set<const GraphEdge*> result = g.GetOutwardEdgesFrom(4);
+    set<const GraphEdge*> soln;  // empty set
+    assert(result.size() == soln.size());
+    
+    cout << "PASSED!" << endl << endl;
+}
+
 int main(){
 	
 	TestAddNode();
@@ -209,6 +298,11 @@ int main(){
 	TestDestructor();
 	TestGraphWithCycles();
 	TestSelfLoop();
+    TestEmptyGraph();
+    TestOneNodeGraph();
+    TestNoOutgoingEdges();
+    TestFullyConnectedGraph();
+    TestDisconnectedGraph();
 
 	//type this in the terminal to use valgrind "valgrind --leak-check=full ./graph-tests"
 	
